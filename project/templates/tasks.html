@@ -1,0 +1,110 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<h1>Welcome to FlaskTaskr</h1>
+<a href="{{ url_for('logout') }}">Logout</a>
+<div class="add-task">
+	<h3>Add a new task:</h3>
+	<table>
+		<tr>
+			<form action="{{ url_for('new_task') }}" method="POST">
+				<td>
+					<input type="text" name="name" placeholder="task-name">
+				</td>
+				<td>
+					<input type="text" name="due_date" placeholder="due_date(mm/dd/yy)">
+				</td>
+				<td>
+					<select name="priority" width="100px">
+						<option value="1">1</option>				
+						<option value="2">2</option>				
+						<option value="3">3</option>				
+						<option value="4">4</option>				
+						<option value="5">5</option>				
+						<option value="6">6</option>				
+						<option value="7">7</option>				
+						<option value="8">8</option>				
+						<option value="9">9</option>				
+						<option value="10">10</option>				
+					</select>
+				</td>
+				<td>
+					&nbsp;
+					&nbsp;
+					<input class="button" type="submit" value="Save">
+				</td>
+
+			</form>
+		</tr>
+	</table>
+</div>
+
+<div class="entries">
+	<br>
+	<h2>Open Tasks:</h2>
+	<div class="datagrid">
+		<table>
+			<thead>
+				<tr>
+					<td width="60px"><strong>Task Id</strong></td>
+					<td width="300px"><strong>Task Name</strong></td>
+					<td width="100px"><strong>due_date</strong></td>
+					<td width="50px"><strong>priority</strong></td>
+				</tr>
+			</thead>
+			{% for task in open_tasks %}
+			<tr>
+				<td width="60px">{{ task.task_id }}</td>
+				<td width="300px">{{ task.name }}</td>
+				<td width="100px">{{ task.due_date }}</td>
+				<td width="50px">{{task.priority }}</td>
+				<td>
+					<a href="{{ url_for('delete_entry', task_id=task.task_id) }}">Delete</a>
+					<a href="{{ url_for('complete', task_id = task.task_id) }}">Mark as complete</a>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>		
+</div>
+
+<div class="entries">
+	<h2>Closed tasks:</h2>
+	<div class="datagrid">
+		<table>
+			<thead>
+				<tr>
+					<td width="60px"><strong>Task Id</strong></td>
+					<td width="300px"><strong>Task Name</strong></td>
+					<td width="100px"><strong>due_date</strong></td>
+					<td width="50px"><strong>priority</strong></td>
+				</tr>
+			</thead>
+			{% for task in closed_tasks %}
+			<tr>
+				<td width="60px">{{ task.task_id }}</td>
+				<td width="300px">{{ task.name }}</td>
+				<td width="100px">{{ task.due_date }}</td>
+				<td width="50px">{{task.priority }}</td>
+				<td>
+					<a href="{{ url_for('delete_entry', task_id=task.task_id) }}">Delete</a>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+

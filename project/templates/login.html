@@ -1,0 +1,22 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<h1>Welcome to FlaskTaskr.</h1>
+<h3>Please log in to access your tasks</h3>
+
+<form action="" method="POST">
+	<div class="input-group">
+		<input type="text" name="username" placeholder="username" value="{{ request.form.username }}">
+	</div>
+	<div class="input-group">
+		<input type="password" name="password" placeholder="password" value="{{ request.form.password }}"/>
+	</div>
+	<div>
+		<button type="submit">Login</button>
+	</div>
+</form>
+
+<p><em>Use 'admin' for username and pasword.</em></p>
+
+{% endblock %}
