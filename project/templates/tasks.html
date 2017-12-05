@@ -9,11 +9,12 @@
 	<table>
 		<tr>
 			<form action="{{ url_for('new_task') }}" method="POST">
+			{{ form.csrf_token}}
 				<td>
 					<input type="text" name="name" placeholder="task-name">
 				</td>
 				<td>
-					<input type="text" name="due_date" placeholder="due_date(mm/dd/yy)">
+					<input type="text" name="due_date" placeholder="due_date(mm/dd/yyyy)">
 				</td>
 				<td>
 					<select name="priority" width="100px">
