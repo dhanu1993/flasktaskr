@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Flasktaskr!!</title>
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+	<title>welcome to flasktaskr</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
 	<div class="page">
-	{% block content %}
 		{% for message in get_flashed_messages() %}
 			<div class="flash">{{ message }}</div>
-		{% endfor%}
-
+		{% endfor %}
+		
 		{% if error %}
-			<div class="error"><strong>Error:</strong>{{ error }}</div>
+			<div class="error">{{ error }}</div>
 		{% endif %}
-	{% endblock %}
+		<br>
+		
+		{% block content %}
+		{% endblock %}
 	</div>
 </body>
 </html>

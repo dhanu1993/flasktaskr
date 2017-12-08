@@ -1,22 +1,43 @@
-{% extends '_base.html' %}
-
+{% extends "_base.html" %}
 {% block content %}
 
-<h1>Welcome to FlaskTaskr.</h1>
-<h3>Please log in to access your tasks</h3>
+  <h1>Welcome to FlaskTaskr.</h1>
+  <h3>Please login to access your task list.</h3>
 
-<form action="" method="POST">
-	<div class="input-group">
-		<input type="text" name="username" placeholder="username" value="{{ request.form.username }}">
-	</div>
-	<div class="input-group">
-		<input type="password" name="password" placeholder="password" value="{{ request.form.password }}"/>
-	</div>
-	<div>
-		<button type="submit">Login</button>
-	</div>
-</form>
+  <div class="half-width">
+    <form method="post" action="/">
+      {{ form.csrf_token }}
 
-<p><em>Use 'admin' for username and pasword.</em></p>
+      <div class="input-group">
+        {{ form.name(placeholder="user name") }}
+        {% if form.name.errors %}
+          <span class="error">
+            {% for error in form.name.errors %}
+              {{error}}
+            {% endfor %}
+          </span>
+        {% endif %}
+      </div>
+
+      <div class="input-group">
+        {{ form.password(placeholder="password") }}
+        {% if form.password.errors %}
+          <span class="error">
+            {% for error in form.password.errors %}
+              {{error}}
+            {% endfor %}
+          </span>
+        {% endif %}
+      </div>
+      
+      <div>
+        <button class="button" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <div>
+    <em>Need an account? </em><a href="/register">Signup!!</a>
+  </div>
 
 {% endblock %}
