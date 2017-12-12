@@ -7,11 +7,12 @@
 # 	c.execute('INSERT INTO tasks(name, due_date, priority, status)' 'VALUES("Finish this tutorial", "03/25/2015", 10, 1)')
 # 	c.execute('INSERT INTO tasks(name, due_date, priority, status)' 'VALUES("Finis Real Pyhton Course 2", "03/25/2015", 10, 1)')
 
-from views import db 
-from models import Task 
+from project import db 
+from project.models import Task , User
 from datetime import date 
 
 db.create_all()
-db.session.add(Task("Finish this tutorial",  date(2016,9,22), 10 ,1))
-db.session.add(Task("Finish  Real Python",  date(2016,9,22), 10 ,1))
+db.session.add(User("admin", "admin@flask.com", "admin", "admin"))
+db.session.add(Task("Finish this tutorial",  date(2016,9,22), 10, date(2017, 12, 13) ,1, 1))
+db.session.add(Task("Finish  Real Python",  date(2016,9,22), 10 , date(2017, 12, 13) ,1, 1))
 db.session.commit()

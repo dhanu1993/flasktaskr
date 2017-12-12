@@ -1,5 +1,5 @@
 #create database, tables, using flask-sqlalchemy	
-from views import db
+from project import db
 import datetime 
 
 #db object contains helper functions for ORM operations. It also provides a parent Model class using which user defined models are declared. In the snippet below, a Task model is created.
