@@ -1,6 +1,6 @@
 import os
 import unittest
-from project import app, db
+from project import app, db, bcrypt
 from project._config import basedir
 from project.models import User , Task 
 
@@ -9,6 +9,7 @@ TEST_DB = 'test.db'
 class AllTests(unittest.TestCase):
 	def setUp(self):
 		app.config['TESTING'] = True
+		app.config['DEBUG'] = False
 		app.config['WTF_CSRF_ENABLED'] = False
 		app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+ os.path.join(basedir, TEST_DB)
 		self.app = app.test_client()
@@ -24,14 +25,16 @@ class AllTests(unittest.TestCase):
 		return self.app.post('/register/', data=dict(name=name, email=email, password=password, confirm=confirm), follow_redirects=True)
 	def logout(self):
 		return self.app.get('logout/', follow_redirects=True)
+
 	def create_user(self, name, email, password):
-		new_user = User(name=name, email=email, password=password)
+		new_user = User(name=name, email=email, password=bcrypt.generate_password_hash(password))
 		db.session.add(new_user)
 		db.session.commit()
 	def create_admin_user(self):
-		new_user = User(name="admin123", email="admin123@flask.com", password="admin123", role = "admin")
+		new_user = User(name="admin123", email="admin123@flask.com", password=bcrypt.generate_password_hash('admin123'), role = "admin")
 		db.session.add(new_user)
 		db.session.commit()
+
 	def create_task(self):
  		return self.app.post("/add/", data=dict(name="do you work", due_date="1/1/2018", priority='1', posted_date="1/1/2018", status='1'), follow_redirects=True)
 	
@@ -125,7 +128,53 @@ class AllTests(unittest.TestCase):
 		self.app.get("/tasks/", follow_redirects=True)
 		response = self.app.get("/delete/1/", follow_redirects=True)
 		self.assertNotIn(b"You can only delete tasks that belong to you.", response.data)
-		
+
+	def test_task_template_displays_logged_in_username(self):
+		self.register("dhanunjaya", "dhanunjaya@flask.com", "dhanunjaya", "dhanunjaya")
+		self.login("dhanunjaya", "dhanunjaya")
+		response = self.app.get("/tasks/", follow_redirects=True)
+		self.assertIn(b"dhanunjaya", response.data)
+
+	def test_user_cannot_see_task_modify_links_for_tasks_not_created_by_them(self):
+		self.register("dhanunjaya", "dhanunjaya@flask.com", "dhanunjaya", "dhanunjaya")
+		self.login("dhanunjaya", "dhanunjaya")
+		self.app.get("tasks/", follow_redirects=True)
+		self.create_task()
+		self.logout()
+		self.register("dhanu12", "dhanu12@flask.com", "dhanu12", "dhanu12")
+		self.login("dhanu12", "dhanu12")
+		response = self.app.get("tasks/", follow_redirects=True)
+		self.assertNotIn(b"Mark as Complete", response.data)
+		self.assertNotIn(b"Delete", response.data)
+
+	def test_user_can_see_task_modify_links_for_tasks_created_by_them(self):
+		self.register("dhanunjaya", "dhanunjaya@flask.com", "dhanunjaya", "dhanunjaya")
+		self.login("dhanunjaya", "dhanunjaya")
+		self.app.get("tasks/", follow_redirects=True)
+		self.create_task()
+		self.logout()
+		self.register("dhanu12", "dhanu12@flask.com", "dhanu12", "dhanu12")
+		self.login("dhanu12", "dhanu12")
+		self.app.get("tasks/", follow_redirects=True)
+		response = self.create_task()
+		self.assertIn(b"/complete/2/", response.data)
+		self.assertIn(b"/complete/2/", response.data)
+
+	def test_admin_user_can_see_task_modify_links_for_all_tasks(self):
+		self.register("dhanunjaya", "dhanunjaya@flask.com", "dhanunjaya", "dhanunjaya")
+		self.login("dhanunjaya", "dhanunjaya")
+		self.app.get("tasks/", follow_redirects=True)
+		self.create_task()
+		self.logout()
+		self.create_admin_user()
+		self.login("admin123", "admin123")
+		self.app.get("/tasks/", follow_redirects=True)
+		response = self.create_task()
+		self.assertIn(b"/complete/1/", response.data)
+		self.assertIn(b"/delete/1/", response.data)
+		self.assertIn(b"/complete/2/", response.data)
+		self.assertIn(b"/delete/2/", response.data)
+
 if __name__ == '__main__':
 	unittest.main()
 
