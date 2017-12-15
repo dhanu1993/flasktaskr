@@ -3,6 +3,6 @@ env
 *.pyc
 __pycache__
 *.DS_Store
-project/_config.py
 .coverage
 project/htmlcov
+error.log
