@@ -175,6 +175,41 @@ class AllTests(unittest.TestCase):
 		self.assertIn(b"/complete/2/", response.data)
 		self.assertIn(b"/delete/2/", response.data)
 
+	def test_user_can_reopen_tasks(self):
+		self.register("dhanunjaya", "dhanunjaya@flask.com", "dhanunjaya", "dhanunjaya")
+		self.login("dhanunjaya","dhanunjaya")
+		self.app.get("/tasks/", follow_redirects=True)
+		self.create_task()
+		self.app.get("/complete/1/", follow_redirects=True)
+		response = self.app.get("/pending/1/", follow_redirects=True)
+		self.assertIn(b"The task is reopened.", response.data)
+		self.assertNotIn(b"You can only update tasks that belongs to you.", response.data)
+
+	def test_user_cannot_reopen_tasks_for_tasks_not_created_by_them(self):
+		self.register("dhanunjaya", "dhanunjaya@flask.com", "dhanunjaya", "dhanunjaya")
+		self.login("dhanunjaya", "dhanunjaya")
+		self.app.get("/tasks/", follow_redirects=True)
+		self.create_task()
+		self.app.get("/complete/1/", follow_redirects=True)
+		self.logout()
+		self.register("dhanu12", "dhanu12@flask.com", "dhanu12", "dhanu12")
+		self.login("dhanu12", "dhanu12")
+		self.app.get("/tasks/", follow_redirects=True)
+		response = self.app.get("/pending/1/", follow_redirects=True)
+		self.assertIn(b"You can only update tasks that belongs to you.", response.data)
+		self.assertNotIn(b"The task is reopened.", response.data)	
+
 if __name__ == '__main__':
 	unittest.main()
+
+
+
+
+
+
+
+
+
+
+
 

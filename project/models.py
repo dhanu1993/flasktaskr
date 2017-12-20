@@ -22,7 +22,7 @@ class Task(db.Model):
 		self.user_id=user_id
 
 	def __repr__(self):
-		return '<name {0}>'.format(self.name)	
+		return 'Task {0}'.format(self.name)	
 
 class User(db.Model):
 	__tablename__ = "users"

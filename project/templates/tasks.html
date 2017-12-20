@@ -43,8 +43,6 @@
     </form>
 </div>
 <div class="entries">
-  <br>
-  <br>
   <h2>Open tasks:</h2>
   <div class="datagrid">
     <table>
@@ -78,8 +76,6 @@
     </table>
   </div>
 </div>
-<br>
-<br>
 <div class="entries">
   <h2>Closed tasks:</h2>
   <div class="datagrid">
@@ -103,7 +99,8 @@
           <td width="90px">{{ task.poster.name }}</td>
           <td>
             {% if task.poster.name == session.name or session.role == "admin" %}
-                <a href="{{ url_for('tasks.delete_entry', task_id = task.task_id) }}">Delete</a>
+                <a href="{{ url_for('tasks.delete_entry', task_id = task.task_id) }}">Delete</a> - 
+                <a href="{{ url_for('tasks.pending',  task_id = task.task_id) }}">Pending</a>
             {% else %}
                 <span>N/A</span>
             {% endif %}                        
