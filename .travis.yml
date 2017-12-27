@@ -8,3 +8,13 @@ install:
 script: 
     - nosetests
 
+deploye:
+  provider: heroku
+  api_key:
+    secure: Kq95wr8v6rGlspuTt3Y8NdPse2eandSAF0DGmQm
+  app: agile-reaches-67888
+  on:
+    branch: master
+    python: "3.6"
+    repo: dhanu1993/flasktask
+

@@ -12,7 +12,9 @@ def commit():
 	message = input("Enter a git commit message: ")
 	local("git add -A && git commit -m '{0}'".format(message))
 def push():
-	local("git push origin master")
+	local("git branch")
+	branch = input("which git branch do you want to push to? ")
+	local("git push origin {}".format(branch))
 
 def prepare():
 	test()
